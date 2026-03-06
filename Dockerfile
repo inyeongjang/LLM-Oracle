@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     openjdk-8-jdk \
     openjdk-17-jdk \
+    openjdk-11-jdk \
     git \
     python3 \
     python3-pip \
@@ -13,6 +14,11 @@ RUN apt-get update && apt-get install -y \
     perl \
     wget \
     ca-certificates \
+    curl \
+    unzip \
+    cpanminus \
+    libdbi-perl \
+    libstring-interpolate-perl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java && \
