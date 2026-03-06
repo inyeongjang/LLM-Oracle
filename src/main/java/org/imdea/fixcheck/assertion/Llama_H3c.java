@@ -14,16 +14,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Llama_H2b extends AssertionGenerator {
+public class Llama_H3c extends AssertionGenerator {
 
   private final String API_URL = "http://localhost:11434/api/generate";
 
   private final String SYSTEM =
       "You are an expert programmer that helps complete Java unit tests with test assertions. "
-    + "Don't explain anything just write the tests. "
-    + "Think step-by-step internally, but do NOT reveal your reasoning.";
+    + "Don't explain anything just write the tests.";
 
-  public Llama_H2b() {}
+  public Llama_H3c() {}
 
   @Override
   public void generateAssertions(Prefix prefix) {
@@ -57,7 +56,6 @@ public class Llama_H2b extends AssertionGenerator {
       prompt += errorLocation + "\n";
     }
 
-    prompt += prefix.getParent().getSourceCode() + "\n";
     prompt += prefix.getSourceCode();
     prompt = replaceLast(prompt, "}", "");
     return prompt;

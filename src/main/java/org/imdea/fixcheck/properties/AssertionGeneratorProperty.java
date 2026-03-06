@@ -40,18 +40,6 @@ public class AssertionGeneratorProperty {
     map.put("llama-h5",       "org.imdea.fixcheck.assertion.Llama_H5");
     map.put("llama-h6",       "org.imdea.fixcheck.assertion.Llama_H6");
 
-    // CodeLlama 7B
-    map.put("codellama-baseline", "org.imdea.fixcheck.assertion.CodeLlama_Baseline");
-    map.put("codellama-h1",       "org.imdea.fixcheck.assertion.CodeLlama_H1");
-    map.put("codellama-h2a",      "org.imdea.fixcheck.assertion.CodeLlama_H2a");
-    map.put("codellama-h2b",      "org.imdea.fixcheck.assertion.CodeLlama_H2b");
-    map.put("codellama-h3a",      "org.imdea.fixcheck.assertion.CodeLlama_H3a");
-    map.put("codellama-h3b",      "org.imdea.fixcheck.assertion.CodeLlama_H3b");
-    map.put("codellama-h3c",      "org.imdea.fixcheck.assertion.CodeLlama_H3c");
-    map.put("codellama-h4",       "org.imdea.fixcheck.assertion.CodeLlama_H4");
-    map.put("codellama-h5",       "org.imdea.fixcheck.assertion.CodeLlama_H5");
-    map.put("codellama-h6",       "org.imdea.fixcheck.assertion.CodeLlama_H6");
-
     return map;
   }
 

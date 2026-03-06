@@ -20,7 +20,7 @@ public class Llama_H2a extends AssertionGenerator {
 
   private final String SYSTEM =
       "You are an expert programmer that helps complete Java unit tests with test assertions. "
-    + "Don't explain anything just write the tests."
+    + "Don't explain anything just write the tests. "
     + "Think step-by-step internally, but do NOT reveal your reasoning.";
 
   public Llama_H2a() {}
