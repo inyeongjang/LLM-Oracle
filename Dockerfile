@@ -28,7 +28,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 WORKDIR /home/ubuntu/fixcheck
 COPY . /home/ubuntu/fixcheck
 
-RUN sed -i 's/\r$//' gradlew fixcheck.sh && chmod +x gradlew fixcheck.sh
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 
 RUN ./gradlew shadowJar
 
@@ -42,5 +42,3 @@ ENV PATH="/opt/venv/bin:${PATH}"
 WORKDIR /home/ubuntu
 RUN git clone https://github.com/rjust/defects4j
 RUN git clone https://github.com/Ultimanecat/DefectRepairing
-
-WORKDIR /home/ubuntu/fixcheck
