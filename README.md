@@ -96,20 +96,13 @@ Experiments are conducted on a Defects4J-based dataset of APR-generated patches.
 ### 1. Setup a Patch
 
 ```bash
-python3 experiments/setup-defect-repairing.py <PatchID>
+python3 experiments/setup-all-defect-repairing.py 
 ```
 
 ### 2. Run FixCheck
 
 ```bash
-python3 experiments/run-fixcheck-defect-repairing.py <PatchID> <MODEL-OPTION>
-```
-
-**Example:**
-
-```bash
-python3 experiments/setup-defect-repairing.py Patch169
-python3 experiments/run-fixcheck-defect-repairing.py Patch169 gpt-h4
+python3 experiments/run-all-defect-repairing.py <MODEL-OPTION>
 ```
 
 Results are stored in `fixcheck-output/defects-repairing`.
@@ -122,34 +115,20 @@ Results are stored in `fixcheck-output/defects-repairing`.
 |---|---|
 | GPT-based | `gpt-baseline`, `gpt-h1`, `gpt-h2a`, `gpt-h2b`, `gpt-h3a`, `gpt-h3b`, `gpt-h3c`, `gpt-h4`, `gpt-h5`, `gpt-h6` |
 | Llama 3.2 3B | `llama-baseline`, `llama-h1`, `llama-h2a`, `llama-h2b`, `llama-h3a`, `llama-h3b`, `llama-h3c`, `llama-h4`, `llama-h5`, `llama-h6` |
-| CodeLlama 7B | `codellama-baseline`, `codellama-h1`, `codellama-h2a`, `codellama-h2b`, `codellama-h3a`, `codellama-h3b`, `codellama-h3c`, `codellama-h4`, `codellama-h5`, `codellama-h6` |
 
 ---
 
 ## Result Analysis
 
 ```bash
-# Collect Defects4J results
-python3 experiments/results/df4j-result.py
+# Reproduce Table II: strategy effectiveness
+python3 experiments/results/table2_effectiveness.py <MODEL-OPTION>
 
-# Reproduce RQ2 results
-python3 experiments/results/rq2-fixcheck-with-pca.py
+# Reproduce Table III: assertion outcome distribution
+python3 experiments/results/table3_outcomes.py <MODEL-OPTION>
 
-# Compute effectiveness metrics
-python3 experiments/summaries/effectiveness.py
-```
-
----
-
-## Citation
-
-```bibtex
-@inproceedings{jang2026apca,
-  title={Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles},
-  author={Jang, Inyeong and Kim, Jinyoung},
-  booktitle={IEEE International Conference on Software Testing, Verification and Validation (ICST)},
-  year={2026}
-}
+# Reproduce Table IV: patch-level precision and recall
+python3 experiments/results/table4_precision_recall.py <MODEL-OPTION>
 ```
 
 ---
