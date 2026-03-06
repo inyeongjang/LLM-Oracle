@@ -177,27 +177,21 @@ curl http://localhost:11434/api/tags
 ### 1. Prepare Patches
 
 ```bash
+cd /home/ubuntu/fixcheck
 python3 experiments/setup-all-defect-repairing.py
 ```
 
-### 2. Build FixCheck JAR
-
-```bash
-./gradlew shadowJar
-```
-
-`fixcheck.sh` also auto-rebuilds this JAR when source files are newer.
-
-### 3. Run FixCheck
+### 2. Run FixCheck
 
 ```bash
 python3 experiments/run-all-defect-repairing.py <MODEL-OPTION>
 ```
 
-**Example:**
+### Quick Test
 
 ```bash
-python3 experiments/run-all-defect-repairing.py gpt-h4
+python3 experiments/setup-defect-repairing.py Patch1
+python3 experiments/run-fixcheck-defect-repairing.py Patch1 <MODEL-OPTION>
 ```
 
 Results are stored in `fixcheck-output/defects-repairing`.
