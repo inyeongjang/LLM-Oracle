@@ -6,7 +6,21 @@
 
 Paper: https://inyeongjang.github.io/papers/ICST-2026.pdf
 
----
+Artifact DOI: (to be added after Zenodo archival)
+
+<br>
+
+## Badges
+
+This artifact is submitted for the following badges:
+
+- Artifact Available
+The artifact is publicly available through a permanent archival repository.
+
+- Artifact Reusable
+The artifact includes complete documentation, scripts, and a Docker environment to facilitate reuse by other researchers.
+
+<br>
 
 ## Purpose
 
@@ -150,7 +164,7 @@ Pull and run the model:
 
 ```bash
 ollama pull llama3.2:3b
-ollama serve
+ollama run llama3.2:3b
 ```
 
 Verify installation:
@@ -206,6 +220,14 @@ python3 experiments/results/table3_outcomes.py <MODEL-OPTION>
 # Table IV: patch-level precision and recall
 python3 experiments/results/table4_precision_recall.py <MODEL-OPTION>
 ```
+
+<br>
+
+## License
+
+This artifact is released under the MIT License.
+
+See the LICENSE file for details.
 
 <br>
 
