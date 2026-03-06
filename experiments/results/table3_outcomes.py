@@ -118,7 +118,7 @@ for patch_id in target_patches:
                 if "with" in prefix:
                     af_scores.append(score)      # assertion-failing
                 else:
-                    crash_scores.append(score)   # crashing (혹은 기타 failing)
+                    crash_scores.append(score)   # crashing
 
             af_score_count = len(af_scores)
             if af_score_count > 0:
