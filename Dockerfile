@@ -1,34 +1,40 @@
-FROM ubuntu:24.10
+FROM ubuntu:22.04
 
-RUN apt-get update
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install requirements
-RUN apt-get install -y openjdk-8-jdk
-RUN apt-get install -y openjdk-17-jdk
-RUN apt-get install -y git
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-RUN apt-get install -y python3-venv
-RUN apt-get install -y subversion
-RUN apt-get install -y perl
-RUN apt-get install -y wget
+RUN apt-get update && apt-get install -y \
+    openjdk-8-jdk \
+    openjdk-17-jdk \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    subversion \
+    perl \
+    wget \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set Java 17 as default
-RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-RUN update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java && \
+    update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-# Clone and build FixCheck
 WORKDIR /home/ubuntu
 RUN git clone https://github.com/facumolina/fixcheck
 WORKDIR /home/ubuntu/fixcheck
-RUN ./gradlew shadowJar
-RUN python3 -m venv venv
-RUN . venv/bin/activate
-RUN pip3 install -r experiments/requirements.txt --break-system-packages
-RUN pip3 install -r llms/requirements.txt --break-system-packages
 
-# Clone projects related to experiments
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
+
+RUN ./gradlew shadowJar
+
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip setuptools wheel
+
+RUN /opt/venv/bin/pip install -r experiments/requirements.txt
+RUN /opt/venv/bin/pip install -r llms/requirements.txt
+
+ENV PATH="/opt/venv/bin:${PATH}"
+
 WORKDIR /home/ubuntu
 RUN git clone https://github.com/rjust/defects4j
 RUN git clone https://github.com/Ultimanecat/DefectRepairing

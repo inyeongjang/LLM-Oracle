@@ -1,207 +1,159 @@
-# fixcheck
-FixCheck is a tool for improving patch correctness analysis. 
-Given a target Java patch, it uses static analysis and random testing to generate 
-new inputs to test the patch, and LLMs to generate meaningful assertions for the new inputs. 
-The new tests are executed and those that fail are selected and prioritised 
-according to their likelihood of revealing a defect in the patch.
+# Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles
+
+Replication package for the paper:
+
+> **Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles**
+> Accepted at ICST 2026
 
 ---
-## Setting up FixCheck
 
-### Requirements
+## Overview
 
-- Java >= 17 (tested with 17)
-- Python3 (tested with 3.11.5)
-- [Ollama](https://ollama.com/) (tool providing access to open source LLMs)
+This repository extends [FixCheck](https://github.com/facumolina/fixcheck) to study the impact of prompt engineering on LLM-based Automated Patch Correctness Assessment (APCA).
 
-### Local Installation
+We identify two common failure modes in FixCheck's assertion generation pipeline and propose six prompt engineering strategies (H1–H6) to address them, without modifying FixCheck's underlying architecture.
 
-To install FixCheck, clone the repository, build the project with gradle and install the python requirements:
-```bash  
-git clone https://github.com/facumolina/fixcheck
-cd fixcheck
-./gradlew shadowJar 
-pip3 install -r experiments/requirements.txt
-pip3 install -r llms/requirements.txt
-```
+| Failure Mode | Description |
+|---|---|
+| **Semantic Insufficiency** | Generated assertions fail to capture defect-triggering conditions |
+| **Syntactic Invalidity** | Generated tests fail to compile due to scope violations or hallucinated APIs |
 
-Set up the FixCheck environment variable:
-```bash  
-export FIXCHECK=<path_to_thisrepo>
-```
+---
 
-Although FixCheck support multiple LLMs (and can be extended), 
-it is necessary to download the LLMs that will be used, or interact
-with them through an API. Here we provide instructions on the currently 
-supported LLMs:
+## Prompt Engineering Strategies
 
-#### replit-code
-To use this model, other python requirements are needed, which, 
-for the sake of simplicity, are not included in the requirements.txt files. 
-To install them, run the following command:
+### Group 1: Improving Verification Depth
+
+| Strategy | Description |
+|---|---|
+| H1 | Expansion of bug-related context |
+| H2 | Inducement of step-wise reasoning |
+| H3 | Mitigation of copying bias |
+| H4 | Explicit alignment with APCA objectives |
+
+### Group 2: Enhancing Code Validity
+
+| Strategy | Description |
+|---|---|
+| H5 | Output format enforcement |
+| H6 | Scope-aware constraints |
+
+---
+
+## Key Results
+
+- For **GPT-based models**, role alignment with APCA objectives (H4) improves incorrect patch detection by up to **+7.5%**
+- For **Llama 3.2 3B**, output format enforcement (H5) improves detection by up to **+19.9%**
+- Prompt effectiveness is **model-dependent**, highlighting the importance of model-aware prompt design
+
+---
+
+## Setup
+
+### 1. Build and Run Docker Container
+
 ```bash
-pip3 install sentencepiece==0.1.99
-pip3 install torch==2.0.1
-python3 llms/replit-code.py
-```
-
-#### codellama
-Codellama needs to be downloaded using Ollama:
-```bash  
-ollama run codellama
-```
-> [!Note]
-> This command will download the 7B version of the codellama model. 
-> Other version can be downloaded by specifying the version in the command,
-> but in order to use other versions you will need to extend 
-> FixCheck as described in the Extending FixCheck section.
-
-After setting any of the LLMs, FixCheck is ready to be used.
-
-### Docker
-
-We provide a `Dockerfile` that can be used to build a docker image with 
-FixCheck and all its dependencies. To build and run the docker image, 
-execute the following commands:
-```bash  
+git clone <this-repo>
+cd <this-repo>
 docker build -t fixcheck .
 docker run -it fixcheck
 ```
-> [!Note]
-> Building the image may take a while, as it will download and install all the dependencies for running
-> FixCheck, and also to analyze the example patches discussed below.
 
-> [!Note]
-> Also, no LLM will be configured in the Docker image.
-> Thus, the user will need to set up the LLMs as described in the previous section.
+### 2. Set Java 11 as Default (inside the container)
+
+```bash
+update-alternatives --config java
+java -version
+```
+
+### 3. Set Up Defects4J
+
+```bash
+cd /home/ubuntu/defects4j
+./init.sh
+export PATH=$PATH:/home/ubuntu/defects4j/framework/bin
+export DEFECT_REPAIRING_DATASET=/home/ubuntu/DefectRepairing
+```
 
 ---
-## Using FixCheck
 
-In general, to analyse a patch with FixCheck the following steps are needed:
+## Dataset
 
-1. Build the **buggy** version of the project corresponding to the patch under analysis
-2. Run an initial bug revealing test to collect its failure trace
-3. Apply the patch to the project and built the **patched** version
-4. Run FixCheck with the right properties
+Experiments are conducted on a Defects4J-based dataset of APR-generated patches.
 
-### Example
+| | |
+|---|---|
+| Total patches | 139 |
+| Correct | 30 |
+| Incorrect | 109 |
+| Projects | Chart, Lang, Math, Time |
+| APR tools | JGenProg, JKali, Nopol, ACS, HDRepair |
 
-This section contains a simple example analysing a patch 
-from [DefectRepairing](https://github.com/Ultimanecat/DefectRepairing), 
-a repository containing benchmark of correct and incorrect patches 
-for [defects4j](https://github.com/rjust/defects4j) bugs and generated by APR tools, 
-used in the evaluation of PATCH-SIM 
-(a patch correctness assessment tool).
+---
 
-> [!Note]
-> If you are using the Docker image, defects4j and DefectRepairing are already installed, 
-> so you can move to the setup step.
+## Running Experiments
 
-To run FixCheck on any of these patches, perform the following steps:
+### 1. Setup a Patch
 
-1. Download and install [defects4j](https://github.com/rjust/defects4j) (make sure the command defects4j is available)
-2. Download the [DefectRepairing](https://github.com/Ultimanecat/DefectRepairing) benchmark, and set the environgment variable `DEFECT_REPAIRING_DATASET` to the path where the benchmark is located.
+```bash
+python3 experiments/setup-defect-repairing.py <PatchID>
+```
 
-Before executing FixCheck, a setup step is needed, that essentially will 
-clone the project corresponding to the patch under analysis, 
-apply the patch and build the project. 
-For instance, to analyse the Patch1, the setup can be performed by running:
-```bash  
+### 2. Run FixCheck
+
+```bash
+python3 experiments/run-fixcheck-defect-repairing.py <PatchID> <MODEL-OPTION>
+```
+
+**Example:**
+
+```bash
 python3 experiments/setup-defect-repairing.py Patch169
-```
-> [!IMPORTANT]
-> When running the setup script, Java 8 should be configured, as it is required to build defects4j projects.
-
-From this point, we can now execute FixCheck as follows:
-```bash
-python3 experiments/run-fixcheck-defect-repairing.py Patch169 codellama
-```
-The script will automatically extract the arguments 
-from the file `experiments/defect-repairing-subjects.csv`, 
-and call FixCheck 
-with the right properties. For instance, for the Patch1 
-subject the executed command was the following:
-```bash
-java -cp build/libs/fixcheck-all-1.0.0.jar:$DEFECT_REPAIRING_DATASET/tmp/Patch169/Math69b/target/classes:$DEFECT_REPAIRING_DATASET/tmp/Patch169/Math69b/target/test-classes org.imdea.fixcheck.FixCheck 
-```
-, where the file fixcheck.properties contained the following properties:
-```bash  
-test-classes-path=$DEFECT_REPAIRING_DATASET/tmp/Patch169/Math69b/target/test-classes
-test-class=org.apache.commons.math.stat.correlation.PearsonsCorrelationTest
-test-methods=testPValueNearZero 
-test-classes-src=$DEFECT_REPAIRING_DATASET/tmp/Patch169/Math69b/src/test/java 
-inputs-class=int
-test-failure-trace-log=$DEFECT_REPAIRING_DATASET/tmp/Patch169/Math69b/failing_tests 
-number-of-prefixes=100 
-assertion-generator=codellama
+python3 experiments/run-fixcheck-defect-repairing.py Patch169 gpt-h4
 ```
 
-Once it finishes, the results will be stored in the folder `fixcheck-output/defects-repairing`.
-Other patches from the [DefectRepairing](https://github.com/Ultimanecat/DefectRepairing) benchmark can also be analysed following the same procedure, as they are all configured in the csv file `experiments/defect-repairing-subjects.csv`.
-
-### FixCheck Properties
-
-<table class="tg">
-<thead>
-  <tr>
-    <th class="tg-73oq">Property</th>
-    <th class="tg-73oq">Description</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td class="tg-73oq">test-classes-path</td>
-    <td class="tg-73oq">Path to the test classes directory</td>
-  </tr>
- <tr>
-    <td class="tg-73oq">test-classes-src</td>
-    <td class="tg-73oq">Path to the test classes sources directory</td>
-  </tr>
- <tr>
-    <td class="tg-73oq">test-class</td>
-    <td class="tg-73oq">Fully qualified name of the target test class</td>
-  </tr>
- <tr>
-    <td class="tg-73oq">test-methods</td>
-    <td class="tg-73oq">List of names of the initial fault revealing test methods, seperated by ':'</td>
-  </tr>
- <tr>
-    <td class="tg-73oq">test-failure-trace-log</td>
-    <td class="tg-73oq">File containing the failure trace of the target test method</td>
-  </tr>
-  <tr>
-    <td class="tg-73oq">inputs-class</td>
-    <td class="tg-73oq">Name of the inputs class (int,float,double,java.lang.String, etc)</td>
-  </tr>
-  <tr>
-    <td class="tg-73oq">number-of-prefixes</td>
-    <td class="tg-73oq">Number of prefixes variations to generate</td>
-  </tr>
-  <tr>
-    <td class="tg-73oq">assertion-generator</td>
-    <td class="tg-73oq">Assertion generator class fully qualified name (e.g., org.imdea.fixcheck.assertion.ReplitCodeLLM)</td>
-  </tr>
-</tbody>
-</table>
-
-### Extending FixCheck
-
-FixCheck can be extended by adding new assertion generators,
-e.g., based on other LLMs or other techniques. To extend 
-FixCheck with a new assertion generator, the following steps are needed:
-
-1. Create a new class that extends `org.imdea.fixcheck.assertion.AssertionGenerator`
-2. Implement the `generateAssertions` method, which, given a test prefix, 
-   returns a list of assertions for it. 
-3. Invoking FixCheck with the `assertion-generator` property defined with the fully qualified name of the new assertion generator.
-
-Examples of different assertion generators can be found in the 
-package `org.imdea.fixcheck.assertion`.
+Results are stored in `fixcheck-output/defects-repairing`.
 
 ---
+
+## Available Model Options
+
+| Model | Options |
+|---|---|
+| GPT-based | `gpt-baseline`, `gpt-h1`, `gpt-h2a`, `gpt-h2b`, `gpt-h3a`, `gpt-h3b`, `gpt-h3c`, `gpt-h4`, `gpt-h5`, `gpt-h6` |
+| Llama 3.2 3B | `llama-baseline`, `llama-h1`, `llama-h2a`, `llama-h2b`, `llama-h3a`, `llama-h3b`, `llama-h3c`, `llama-h4`, `llama-h5`, `llama-h6` |
+| CodeLlama 7B | `codellama-baseline`, `codellama-h1`, `codellama-h2a`, `codellama-h2b`, `codellama-h3a`, `codellama-h3b`, `codellama-h3c`, `codellama-h4`, `codellama-h5`, `codellama-h6` |
+
+---
+
+## Result Analysis
+
+```bash
+# Collect Defects4J results
+python3 experiments/results/df4j-result.py
+
+# Reproduce RQ2 results
+python3 experiments/results/rq2-fixcheck-with-pca.py
+
+# Compute effectiveness metrics
+python3 experiments/summaries/effectiveness.py
+```
+
+---
+
+## Citation
+
+```bibtex
+@inproceedings{jang2026apca,
+  title={Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles},
+  author={Jang, Inyeong and Kim, Jinyoung},
+  booktitle={IEEE International Conference on Software Testing, Verification and Validation (ICST)},
+  year={2026}
+}
+```
+
+---
+
 ## Contact
-If you experience any issues, please submit an issue or contact us at facundo.molina@imdea.org!
 
-
-
+For questions or issues, please open a GitHub issue.
