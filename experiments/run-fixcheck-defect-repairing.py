@@ -3,6 +3,7 @@ import sys
 import subprocess
 import pandas as pd
 import re  # [ADDED] For parsing bug metadata (root cause / error location)
+import shutil
 
 # Config variables
 FIXCHECK = os.getenv('FIXCHECK')
@@ -14,7 +15,7 @@ bug_info_dir = '/root/defects4j_bug_info'  # [ADDED] Path to Defects4J bug info 
 
 # Get the arguments
 subject_id = sys.argv[1]
-assertion_generation = sys.argv[2]  # One of no-assertion, previous-assertion or llm-assertion
+assertion_generation = sys.argv[2] 
 print(f'Running FixCheck for subject: {subject_id}')
 print(f'assertion generation: {assertion_generation}')
 df = pd.read_csv(dataset_csv)
@@ -86,7 +87,7 @@ env["ROOT_CAUSE"] = root_cause
 env["ERROR_LOCATION"] = error_location
 
 # Run FixCheck
-subprocess.run(
+run_result = subprocess.run(
     f'./fixcheck.sh {subject_cp} {test_classes_path} {target_test} {target_test_methods} '
     f'{target_test_dir} {target_class} {input_class} {failure_log} {assertion_generation}',
     shell=True,
@@ -99,9 +100,20 @@ subject_output_folder = os.path.join(outputs_dir, f'defects-repairing/{subject_i
 print(f'Moving all outputs to dir: {subject_output_folder}')
 if not os.path.exists(subject_output_folder):
     os.makedirs(subject_output_folder)
-subprocess.run(f'mv {outputs_dir}/report.csv {subject_output_folder}', shell=True)
-subprocess.run(f'mv {outputs_dir}/scores-failing-tests.csv {subject_output_folder}', shell=True)
-subprocess.run(f'mv {outputs_dir}/failing-tests {subject_output_folder}', shell=True)
-subprocess.run(f'mv {outputs_dir}/passing-tests {subject_output_folder}', shell=True)
-subprocess.run(f'mv {outputs_dir}/non-compiling-tests {subject_output_folder}', shell=True)
-subprocess.run(f'mv log.out {subject_output_folder}', shell=True)
+
+artifacts = [
+    os.path.join(outputs_dir, 'report.csv'),
+    os.path.join(outputs_dir, 'scores-failing-tests.csv'),
+    os.path.join(outputs_dir, 'failing-tests'),
+    os.path.join(outputs_dir, 'passing-tests'),
+    os.path.join(outputs_dir, 'non-compiling-tests'),
+    'log.out',
+]
+
+for artifact in artifacts:
+    if os.path.exists(artifact):
+        shutil.move(artifact, subject_output_folder)
+
+if run_result.returncode != 0:
+    print(f'FixCheck failed with exit code {run_result.returncode}. See {subject_output_folder}/log.out for details if available.')
+    sys.exit(run_result.returncode)

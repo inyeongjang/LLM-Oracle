@@ -109,9 +109,6 @@ fixcheck/
 ### Software Requirements
 
 - Docker
-- Java 11
-- Python 3
-- Defects4J
 
 ### 1. Build and Run Docker Container
 
@@ -183,7 +180,15 @@ curl http://localhost:11434/api/tags
 python3 experiments/setup-all-defect-repairing.py
 ```
 
-### 2. Run FixCheck
+### 2. Build FixCheck JAR
+
+```bash
+./gradlew shadowJar
+```
+
+`fixcheck.sh` also auto-rebuilds this JAR when source files are newer.
+
+### 3. Run FixCheck
 
 ```bash
 python3 experiments/run-all-defect-repairing.py <MODEL-OPTION>

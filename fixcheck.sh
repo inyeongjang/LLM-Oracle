@@ -9,7 +9,14 @@ target_class=$6
 inputs_class=$7
 original_failure_log=$8
 assertion_generation=$9
-full_cp='build/libs/fixcheck-all-1.0.0.jar:'$subject_cp
+jar_path='build/libs/fixcheck-all-1.0.0.jar'
+
+if [ ! -f "$jar_path" ] || find src/main/java -type f -newer "$jar_path" | grep -q .; then
+	echo 'Building FixCheck JAR (missing or stale)...'
+	./gradlew shadowJar --quiet
+fi
+
+full_cp="$jar_path:$subject_cp"
 
 properties_file='fixcheck-props.properties'
 cat <<EOF > $properties_file
@@ -24,4 +31,4 @@ assertion-generator=$assertion_generation
 EOF
 echo 'properties file: '$properties_file
 
-java -cp $full_cp org.imdea.fixcheck.FixCheck -p $properties_file | tee log.out
+java -cp "$full_cp" org.imdea.fixcheck.FixCheck -p "$properties_file" | tee log.out
