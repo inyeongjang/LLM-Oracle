@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenAI_GPT extends AssertionGenerator {
+public class GPT_H2a extends AssertionGenerator {
 
   private static final String API_URL = "https://api.openai.com/v1/chat/completions";
   private static final String API_KEY = System.getenv("OPENAI_API_KEY");
@@ -23,7 +23,7 @@ public class OpenAI_GPT extends AssertionGenerator {
   private int maxTokens = 256;
   private double temperature = 0.2;
 
-  public OpenAI_GPT() {
+  public GPT_H2a() {
     String envModel = System.getenv("OPENAI_MODEL");
     this.MODEL = (envModel != null && !envModel.isEmpty()) ? envModel : "gpt-4o-mini";
   }
@@ -81,7 +81,7 @@ public class OpenAI_GPT extends AssertionGenerator {
       JSONObject systemMsg = new JSONObject();
       systemMsg.put("role", "system");
       systemMsg.put("content",
-          "You are an expert programmer that helps complete Java unit tests with test assertions. Don't explain anything just write the tests.");
+          "You are an expert programmer that helps complete Java unit tests with test assertions. Don't explain anything just write the tests.\nThink step-by-step internally, but do NOT reveal your reasoning.");
       messages.put(systemMsg);
 
       JSONObject userMsg = new JSONObject();

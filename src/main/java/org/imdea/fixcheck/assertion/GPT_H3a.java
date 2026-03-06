@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenAI_GPT_OUTPUT extends AssertionGenerator {
+public class GPT_H3a extends AssertionGenerator {
 
   private static final String API_URL = "https://api.openai.com/v1/chat/completions";
   private static final String API_KEY = System.getenv("OPENAI_API_KEY");
@@ -23,7 +23,7 @@ public class OpenAI_GPT_OUTPUT extends AssertionGenerator {
   private int maxTokens = 256;
   private double temperature = 0.2;
 
-  public OpenAI_GPT_OUTPUT() {
+  public GPT_H3a() {
     String envModel = System.getenv("OPENAI_MODEL");
     this.MODEL = (envModel != null && !envModel.isEmpty()) ? envModel : "gpt-4o-mini";
   }
@@ -47,7 +47,6 @@ public class OpenAI_GPT_OUTPUT extends AssertionGenerator {
     String prompt = "You are an expert programmer that helps complete Java unit tests with test assertions. " +
         "Avoid using text. Don't explain anything just complete the given code snippet with the " +
         "corresponding test assertions";
-    prompt += prefix.getParent().getSourceCode() + "\n";
     prompt += prefix.getSourceCode();
     prompt = replaceLast(prompt, "}", "");
     return prompt;
@@ -81,7 +80,7 @@ public class OpenAI_GPT_OUTPUT extends AssertionGenerator {
       JSONObject systemMsg = new JSONObject();
       systemMsg.put("role", "system");
       systemMsg.put("content",
-          "You are an expert programmer that helps complete Java unit tests with test assertions.\nOutput ONLY valid Java JUnit assertion statements ending with a semicolon.\nNo comments, explanations, imports, or extra text.\nExamples:assertEquals(expected, actual); assertTrue(condition); assertFalse(condition); assertNotNull(value); assertNull(value);\n");
+          "You are an expert programmer that helps complete Java unit tests with test assertions. Don't explain anything just write the tests.");
       messages.put(systemMsg);
 
       JSONObject userMsg = new JSONObject();

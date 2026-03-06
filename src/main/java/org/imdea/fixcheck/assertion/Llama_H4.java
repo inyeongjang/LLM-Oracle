@@ -14,15 +14,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Llama_Ollama extends AssertionGenerator {
+public class Llama_H4 extends AssertionGenerator {
 
   private final String API_URL = "http://localhost:11434/api/generate";
 
   private final String SYSTEM =
-      "You are an expert programmer that helps complete Java unit tests with test assertions. "
+      "You are an expert Java unit-test assistant for Automated Patch Correctness Assessment. "
+    + "Your goal is to generate fault-revealing assertions that FAIL when the bug in the Failure Trace still exists and PASS when it is fixed. "
     + "Don't explain anything just write the tests.";
 
-  public Llama_Ollama() {}
+  public Llama_H4() {}
 
   @Override
   public void generateAssertions(Prefix prefix) {
@@ -88,7 +89,7 @@ public class Llama_Ollama extends AssertionGenerator {
       return completion;
 
     } catch (Exception e) {
-      System.out.println("Error while performing the call to the model llama3.1 through Ollama");
+      System.out.println("Error while performing the call to the model llama3.2:3b through Ollama");
       e.printStackTrace();
       throw new RuntimeException(e);
     }

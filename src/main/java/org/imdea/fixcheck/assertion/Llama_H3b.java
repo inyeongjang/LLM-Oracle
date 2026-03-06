@@ -14,16 +14,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Llama_Ollama_ROLE extends AssertionGenerator {
+public class Llama_H3b extends AssertionGenerator {
 
   private final String API_URL = "http://localhost:11434/api/generate";
 
   private final String SYSTEM =
-      "You are an expert Java unit-test assistant for Automated Patch Correctness Assessment. "
-    + "Your goal is to generate fault-revealing assertions that FAIL when the bug in the Failure Trace still exists and PASS when it is fixed. "
-    + "Don't explain anything just write the tests.";
+      "You are an expert programmer that helps complete Java unit tests with test assertions. "
+    + "Output ONLY valid Java JUnit assertion statements ending with a semicolon. "
+    + "No comments, explanations, imports, or extra text. "
+    + "Examples:assertEquals(expected, actual); assertTrue(condition); assertFalse(condition); assertNotNull(value); assertNull(value);";
 
-  public Llama_Ollama_ROLE() {}
+  public Llama_H3b() {}
 
   @Override
   public void generateAssertions(Prefix prefix) {
@@ -43,7 +44,6 @@ public class Llama_Ollama_ROLE extends AssertionGenerator {
         "You are an expert programmer that helps complete Java unit tests with test assertions. "
       + "Avoid using text. Don't explain anything just complete the given code snippet with the "
       + "corresponding test assertions";
-    prompt += prefix.getParent().getSourceCode() + "\n";
     prompt += prefix.getSourceCode();
     prompt = replaceLast(prompt, "}", "");
     return prompt;
@@ -89,7 +89,7 @@ public class Llama_Ollama_ROLE extends AssertionGenerator {
       return completion;
 
     } catch (Exception e) {
-      System.out.println("Error while performing the call to the model llama3.1 through Ollama");
+      System.out.println("Error while performing the call to the model llama3.2:3b through Ollama");
       e.printStackTrace();
       throw new RuntimeException(e);
     }

@@ -14,17 +14,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Llama_Ollama_OUTPUT extends AssertionGenerator {
+public class Llama_H6 extends AssertionGenerator {
 
   private final String API_URL = "http://localhost:11434/api/generate";
 
   private final String SYSTEM =
       "You are an expert programmer that helps complete Java unit tests with test assertions. "
-    + "Output ONLY valid Java JUnit assertion statements ending with a semicolon. "
-    + "No comments, explanations, imports, or extra text. "
-    + "Examples:assertEquals(expected, actual); assertTrue(condition); assertFalse(condition); assertNotNull(value); assertNull(value);";
+    + "Don't explain anything just write the tests. "
+    + "Use only variables that are in scope at the end of the test method. Do not invent or assume any methods, classes, fields, or return values. Do not reference objects that were never initialized or may not exist.";
 
-  public Llama_Ollama_OUTPUT() {}
+  public Llama_H6() {}
 
   @Override
   public void generateAssertions(Prefix prefix) {
@@ -90,7 +89,7 @@ public class Llama_Ollama_OUTPUT extends AssertionGenerator {
       return completion;
 
     } catch (Exception e) {
-      System.out.println("Error while performing the call to the model llama3.1 through Ollama");
+      System.out.println("Error while performing the call to the model llama3.2:3b through Ollama");
       e.printStackTrace();
       throw new RuntimeException(e);
     }
