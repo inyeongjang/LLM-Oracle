@@ -11,10 +11,8 @@ original_failure_log=$8
 assertion_generation=$9
 jar_path='build/libs/fixcheck-all-1.0.0.jar'
 
-if [ ! -f "$jar_path" ] || find src/main/java -type f -newer "$jar_path" | grep -q .; then
-	echo 'Building FixCheck JAR (missing or stale)...'
-	./gradlew shadowJar --quiet
-fi
+echo 'Ensuring FixCheck JAR is up to date...'
+./gradlew shadowJar --quiet
 
 full_cp="$jar_path:$subject_cp"
 
