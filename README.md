@@ -4,9 +4,9 @@
 > *Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles*
 > Accepted at *ICST 2026*
 
-Paper: https://inyeongjang.github.io/papers/ICST-2026.pdf
+> Paper: https://inyeongjang.github.io/papers/ICST-2026.pdf
 
----
+<br>
 
 ## Purpose
 
