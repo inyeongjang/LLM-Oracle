@@ -4,21 +4,14 @@
 > *Improving Automated Patch Correctness Assessment by Designing LLM-Based Oracles*
 > Accepted at *ICST 2026*
 
-Paper: https://inyeongjang.github.io/papers/ICST-2026.pdf
-
-Artifact DOI: (to be added after Zenodo archival)
-
 <br>
 
 ## Badges
 
 This artifact is submitted for the following badges:
 
-- Artifact Available
-The artifact is publicly available through a permanent archival repository.
-
-- Artifact Reusable
-The artifact includes complete documentation, scripts, and a Docker environment to facilitate reuse by other researchers.
+- **Artifact Available**: the artifact is archived on Zenodo with a permanent DOI, ensuring long-term public accessibility.
+- **Artifact Reviewed**: the artifact is documented, consistent with the paper, complete with all implementation and analysis scripts, and exercisable via a provided Docker environment.
 
 <br>
 
@@ -28,14 +21,10 @@ Automated Program Repair (APR) tools often generate plausible but incorrect patc
 
 This artifact extends [FixCheck](https://github.com/facumolina/fixcheck), a framework that assesses patch correctness by generating test assertions using LLMs. We identify two major failure modes in FixCheck's assertion generation pipeline and propose six prompt engineering strategies (H1–H6) to address them without modifying FixCheck's underlying architecture.
 
-### Failure Modes
-
 | Failure Mode | Description |
 |---|---|
 | **Semantic Insufficiency** | Generated assertions fail to capture defect-triggering conditions |
 | **Syntactic Invalidity** | Generated tests fail to compile due to scope violations or hallucinated APIs |
-
-### Prompt Engineering Strategies
 
 **Group 1: Improving Verification Depth**
 
@@ -60,8 +49,6 @@ This artifact extends [FixCheck](https://github.com/facumolina/fixcheck), a fram
 - Artifact repository: https://github.com/inyeongjang/LLM-Oracle
 - Paper preprint: https://inyeongjang.github.io/papers/ICST-2026.pdf
 
-This repository contains the full implementation and scripts required to reproduce the experimental results presented in the paper.
-
 <br>
 
 ## Data
@@ -75,6 +62,8 @@ Experiments are conducted on a Defects4J-based dataset of APR-generated patches.
 | Incorrect patches | 109 |
 | Projects | Chart, Lang, Math, Time |
 | APR tools | JGenProg, JKali, Nopol, ACS, HDRepair |
+
+The dataset is derived from the publicly available Defects4J benchmark. No personal data is involved. The dataset is freely available for research purposes. Storage requirement: approximately 10GB for the full dataset and experiment outputs.
 
 <br>
 
@@ -151,17 +140,10 @@ export OPENAI_MODEL=gpt-4o-mini   # for GPT-4o-mini
 
 ### Llama 3.2 3B (via Ollama)
 
-Install Ollama:
-
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
-```
-
-Pull and run the model:
-
-```bash
 ollama pull llama3.2:3b
-ollama run llama3.2:3b
+ollama serve
 ```
 
 Verify installation:
@@ -172,31 +154,38 @@ curl http://localhost:11434/api/tags
 
 <br>
 
-## Running Experiments
 
-### 1. Prepare Patches
-
-```bash
-cd /home/ubuntu/fixcheck
-python3 experiments/setup-all-defect-repairing.py
-```
-
-### 2. Run FixCheck
-
-```bash
-python3 experiments/run-all-defect-repairing.py <MODEL-OPTION>
-```
+## Usage
 
 ### Quick Test
 
+To confirm the artifact is correctly set up:
+
 ```bash
+cd /home/ubuntu/fixcheck
 python3 experiments/setup-defect-repairing.py Patch1
-python3 experiments/run-fixcheck-defect-repairing.py Patch1 <MODEL-OPTION>
+python3 experiments/run-fixcheck-defect-repairing.py Patch1 llama-baseline
+```
+
+Expected output:
+```
+Running FixCheck for subject: Patch1
+assertion generation: llama-baseline
+...
+Moving all outputs to dir: fixcheck-output/defects-repairing/Patch1/llama-baseline
+```
+
+### Full Experiment
+
+```bash
+python3 experiments/setup-all-defect-repairing.py
+python3 experiments/run-all-defect-repairing.py <MODEL-OPTION>
 ```
 
 Results are stored in `fixcheck-output/defects-repairing`.
 
 <br>
+
 
 ## Available Model Options
 
@@ -206,6 +195,7 @@ Results are stored in `fixcheck-output/defects-repairing`.
 | Llama 3.2 3B | `llama-baseline`, `llama-h1`, `llama-h2a`, `llama-h2b`, `llama-h3a`, `llama-h3b`, `llama-h3c`, `llama-h4`, `llama-h5`, `llama-h6` |
 
 <br>
+
 
 ## Reproducing Paper Results
 
@@ -222,13 +212,13 @@ python3 experiments/results/table4_precision_recall.py <MODEL-OPTION>
 
 <br>
 
+
 ## License
 
-This artifact is released under the MIT License.
-
-See the LICENSE file for details.
+This artifact is released under the MIT License. See the LICENSE file for details.
 
 <br>
+
 
 ## Contact
 
