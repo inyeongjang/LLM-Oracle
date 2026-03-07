@@ -91,7 +91,7 @@ run_result = subprocess.run(
     f'./fixcheck.sh {subject_cp} {test_classes_path} {target_test} {target_test_methods} '
     f'{target_test_dir} {target_class} {input_class} {failure_log} {assertion_generation}',
     shell=True,
-    env=env,  # Pass enriched environment so the Java side can read bug metadata
+    env=env,
 )
 
 # Move all outputs to a folder specific to the current subject

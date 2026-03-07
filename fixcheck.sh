@@ -10,10 +10,6 @@ inputs_class=$7
 original_failure_log=$8
 assertion_generation=$9
 jar_path='build/libs/fixcheck-all-1.0.0.jar'
-
-echo 'Ensuring FixCheck JAR is up to date...'
-./gradlew shadowJar --quiet
-
 full_cp="$jar_path:$subject_cp"
 
 properties_file='fixcheck-props.properties'
