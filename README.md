@@ -6,15 +6,6 @@
 
 <br>
 
-## Badges
-
-This artifact is submitted for the following badges:
-
-- **Artifact Available**: the artifact is archived on Zenodo with a permanent DOI, ensuring long-term public accessibility.
-- **Artifact Reviewed**: the artifact is documented, consistent with the paper, complete with all implementation and analysis scripts, and exercisable via a provided Docker environment.
-
-<br>
-
 ## Purpose
 
 Automated Program Repair (APR) tools often generate plausible but incorrect patches. Automated Patch Correctness Assessment (APCA) aims to automatically determine whether a patch is correct.
@@ -41,6 +32,11 @@ This artifact extends [FixCheck](https://github.com/facumolina/fixcheck), a fram
 |---|---|
 | H5 | Output format enforcement |
 | H6 | Scope-aware constraints |
+
+This artifact is submitted for the following badges:
+
+- **Artifact Available**: the artifact is archived on Zenodo with a permanent DOI, ensuring long-term public accessibility.
+- **Artifact Reviewed**: the artifact is documented, consistent with the paper, complete with all implementation and analysis scripts, and exercisable via a provided Docker environment.
 
 <br>
 
