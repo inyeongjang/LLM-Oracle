@@ -43,6 +43,7 @@ This artifact is submitted for the following badges:
 ## Provenance
 
 - Artifact repository: https://github.com/inyeongjang/LLM-Oracle
+- Artifact DOI: https://doi.org/10.5281/zenodo.18900115
 - Paper preprint: https://inyeongjang.github.io/papers/ICST-2026.pdf
 
 <br>
