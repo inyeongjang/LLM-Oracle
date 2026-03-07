@@ -76,6 +76,7 @@ fixcheck/
 ├── experiments/
 │   ├── setup-all-defect-repairing.py
 │   ├── run-all-defect-repairing.py
+│   ├── collect_bug_info.py         # Collect Defects4J bug metadata for H1 context
 │   └── results/
 │       ├── table2_effectiveness.py
 │       ├── table3_outcomes.py
@@ -90,7 +91,6 @@ fixcheck/
 
 ### Hardware Requirements
 
-- CPU: 8 cores or higher
 - RAM: 16GB
 - Disk: ~20GB free space
 - GPU: not required
@@ -157,12 +157,19 @@ curl http://localhost:11434/api/tags
 
 ## Usage
 
+Run once before experiments to extract root cause and modified source info from Defects4J:
+```bash
+cd /home/ubuntu/fixcheck
+python3 experiments/collect_bug_info.py
+```
+
+Output is saved to `/root/defects4j_bug_info/`. This step is only required when using H1-based model options (`gpt-h1`, `gpt-h2b`, `gpt-h3c`, `llama-h1`, `llama-h2b`, `llama-h3c`).
+
 ### Quick Test
 
 To confirm the artifact is correctly set up:
 
 ```bash
-cd /home/ubuntu/fixcheck
 python3 experiments/setup-defect-repairing.py Patch1
 python3 experiments/run-fixcheck-defect-repairing.py Patch1 llama-baseline
 ```
